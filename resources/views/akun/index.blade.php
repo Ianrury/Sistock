@@ -12,11 +12,13 @@
                 <p class="mt-2 text-sm text-gray-700">Kelola Akun Pada sistem</p>
             </div>
             <div class="mt-4 sm:mt-0">
-                <button
-                    class="inline-flex items-center px-4 py-2 border border-transparent rounded-lg shadow-sm text-sm font-medium text-white bg-primary hover:bg-blue-700 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-primary transition-all duration-200">
-                    <i class="fas fa-plus mr-2"></i>
-                    Tambah Akun
-                </button>
+                <a href="{{ route('akun.create') }}">
+                    <button
+                        class="inline-flex items-center px-4 py-2 border border-transparent rounded-lg shadow-sm text-sm font-medium text-white bg-primary hover:bg-blue-700 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-primary transition-all duration-200">
+                        <i class="fas fa-plus mr-2"></i>
+                        Tambah Akun
+                    </button>
+                </a>
             </div>
         </div>
     </div>
@@ -36,12 +38,14 @@
                     <div class="ml-4 flex-1">
                         <dl>
                             <dt class="text-sm font-medium text-gray-500 truncate">Total Products</dt>
-                            <dd class="text-2xl font-bold text-gray-900">156</dd>
+                            <dd class="text-2xl font-bold text-gray-900"> {{ number_format($totalAdmins, 0, ',', '.') }}
+                            </dd>
                         </dl>
                     </div>
                 </div>
                 <div class="mt-4 flex items-center text-sm">
-                    <span class="text-green-600 font-medium">12 new this month</span>
+                    <span class="text-green-600 font-medium">{{ number_format($newThisMonth, 0, ',', '.') }} Akun terbaru
+                        pada bulan ini</span>
                 </div>
             </div>
         </div>
@@ -51,18 +55,6 @@
         <div class="px-6 py-4 border-b border-gray-200">
             <div class="flex items-center justify-between mb-4">
                 <h3 class="text-lg font-semibold text-gray-900">Data Akun</h3>
-                <div class="flex space-x-2">
-                    <button
-                        class="inline-flex items-center px-3 py-2 border border-gray-300 rounded-lg text-sm font-medium text-gray-700 bg-white hover:bg-gray-50 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-primary">
-                        <i class="fas fa-download mr-2"></i>
-                        Export
-                    </button>
-                    <button
-                        class="inline-flex items-center px-3 py-2 border border-gray-300 rounded-lg text-sm font-medium text-gray-700 bg-white hover:bg-gray-50 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-primary">
-                        <i class="fas fa-filter mr-2"></i>
-                        Filter
-                    </button>
-                </div>
             </div>
             <!-- Search Bar -->
             <div class="relative">
@@ -120,39 +112,9 @@
         </div>
     </div>
 
+    <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
     <script>
-        // Dummy data
-        const accountsData = [{
-                id: 1,
-                username: 'admin123',
-                created: '2024-01-15'
-            },
-            {
-                id: 2,
-                username: 'user_john',
-                created: '2024-02-20'
-            },
-            {
-                id: 3,
-                username: 'manager_sarah',
-                created: '2024-03-10'
-            },
-            {
-                id: 4,
-                username: 'employee_mike',
-                created: '2024-03-25'
-            },
-            {
-                id: 5,
-                username: 'guest_user',
-                created: '2024-04-05'
-            },
-            {
-                id: 6,
-                username: 'supervisor_alex',
-                created: '2024-04-18'
-            }
-        ];
+        const accountsData = @json($admins);
 
         let filteredData = [...accountsData];
         let currentPage = 1;
@@ -169,33 +131,33 @@
             currentData.forEach((account, index) => {
                 const globalIndex = startIndex + index + 1;
                 const row = `
-                    <tr class="hover:bg-gray-50 transition-colors">
-                        <td class="px-6 py-4 whitespace-nowrap text-sm text-gray-900">${globalIndex}</td>
-                        <td class="px-6 py-4 whitespace-nowrap">
-                            <div class="flex items-center">
-                                <div class="flex-shrink-0 h-10 w-10">
-                                    <div class="h-10 w-10 rounded-full bg-blue-100 flex items-center justify-center">
-                                        <i class="fas fa-user text-blue-600"></i>
-                                    </div>
-                                </div>
-                                <div class="ml-3">
-                                    <div class="text-sm font-medium text-gray-900">${account.username}</div>
-                                </div>
+            <tr class="hover:bg-gray-50 transition-colors">
+                <td class="px-6 py-4 whitespace-nowrap text-sm text-gray-900">${globalIndex}</td>
+                <td class="px-6 py-4 whitespace-nowrap">
+                    <div class="flex items-center">
+                        <div class="flex-shrink-0 h-10 w-10">
+                            <div class="h-10 w-10 rounded-full bg-blue-100 flex items-center justify-center">
+                                <i class="fas fa-user text-blue-600"></i>
                             </div>
-                        </td>
-                        <td class="px-6 py-4 whitespace-nowrap text-sm text-gray-900">${formatDate(account.created)}</td>
-                        <td class="px-6 py-4 whitespace-nowrap text-sm font-medium">
-                            <div class="flex space-x-2">
-                                <button onclick="editAccount(${account.id})" class="text-primary hover:text-blue-700 p-2 rounded hover:bg-blue-50 transition-colors">
-                                    <i class="fas fa-edit"></i>
-                                </button>
-                                <button onclick="deleteAccount(${account.id})" class="text-red-600 hover:text-red-700 p-2 rounded hover:bg-red-50 transition-colors">
-                                    <i class="fas fa-trash"></i>
-                                </button>
-                            </div>
-                        </td>
-                    </tr>
-                `;
+                        </div>
+                        <div class="ml-3">
+                            <div class="text-sm font-medium text-gray-900">${account.username}</div>
+                        </div>
+                    </div>
+                </td>
+                <td class="px-6 py-4 whitespace-nowrap text-sm text-gray-900">${formatDate(account.created_at)}</td>
+                <td class="px-6 py-4 whitespace-nowrap text-sm font-medium">
+                    <div class="flex space-x-2">
+                        <button onclick="editAccount(${account.id})" class="text-primary hover:text-blue-700 p-2 rounded hover:bg-blue-50 transition-colors">
+                            <i class="fas fa-edit"></i>
+                        </button>
+                        <button onclick="deleteAccount(${account.id})" class="text-red-600 hover:text-red-700 p-2 rounded hover:bg-red-50 transition-colors">
+                            <i class="fas fa-trash"></i>
+                        </button>
+                    </div>
+                </td>
+            </tr>
+        `;
                 tbody.innerHTML += row;
             });
 
@@ -257,29 +219,68 @@
 
         function editAccount(id) {
             const account = accountsData.find(acc => acc.id === id);
-            alert(`Edit akun: ${account.username}`);
+            window.location.href = `/akuh/edit/${account.id}`;
         }
 
         function deleteAccount(id) {
             const account = accountsData.find(acc => acc.id === id);
-            if (confirm(`Hapus akun ${account.username}?`)) {
-                // Remove from original data
-                const originalIndex = accountsData.findIndex(acc => acc.id === id);
-                if (originalIndex > -1) {
-                    accountsData.splice(originalIndex, 1);
+
+            Swal.fire({
+                title: 'Konfirmasi Hapus',
+                text: `Apakah Anda yakin ingin menghapus akun ${account.username}?`,
+                icon: 'warning',
+                showCancelButton: true,
+                confirmButtonColor: '#d33',
+                cancelButtonColor: '#3085d6',
+                confirmButtonText: 'Ya, Hapus!',
+                cancelButtonText: 'Batal'
+            }).then((result) => {
+                if (result.isConfirmed) {
+                    fetch(`/akun/hapus/${id}`, {
+                            method: 'POST',
+                            headers: {
+                                'Content-Type': 'application/json',
+                                'X-CSRF-TOKEN': document.querySelector('meta[name="csrf-token"]').getAttribute(
+                                    'content')
+                            }
+                        })
+                        .then(response => {
+                            if (response.ok) {
+                                const originalIndex = accountsData.findIndex(acc => acc.id === id);
+                                if (originalIndex > -1) {
+                                    accountsData.splice(originalIndex, 1);
+                                }
+
+                                searchAccounts();
+
+                                const totalPages = Math.ceil(filteredData.length / itemsPerPage);
+                                if (currentPage > totalPages && totalPages > 0) {
+                                    currentPage = totalPages;
+                                }
+
+                                renderTable();
+
+                                Swal.fire({
+                                    title: 'Berhasil!',
+                                    text: 'Akun berhasil dihapus.',
+                                    icon: 'success',
+                                    timer: 2000,
+                                    showConfirmButton: false
+                                });
+                            } else {
+                                throw new Error('Gagal menghapus akun');
+                            }
+                        })
+                        .catch(error => {
+                            console.error('Error:', error);
+                            Swal.fire({
+                                title: 'Error!',
+                                text: 'Terjadi kesalahan saat menghapus akun.',
+                                icon: 'error'
+                            });
+                        });
                 }
-
-                // Update filtered data
-                searchAccounts();
-
-                // Adjust current page if needed
-                const totalPages = Math.ceil(filteredData.length / itemsPerPage);
-                if (currentPage > totalPages && totalPages > 0) {
-                    currentPage = totalPages;
-                }
-
-                renderTable();
-            }
+            });
         }
 
         // Event listeners

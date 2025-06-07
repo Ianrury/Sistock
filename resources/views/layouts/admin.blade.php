@@ -7,6 +7,9 @@
     <title>@yield('title', 'Admin Dashboard')</title>
     <script src="https://cdn.tailwindcss.com"></script>
     <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css" rel="stylesheet">
+    <meta name="csrf-token" content="{{ csrf_token() }}">
+    @stack('styles')
+
     <script>
         tailwind.config = {
             theme: {
@@ -29,57 +32,51 @@
             class="fixed inset-y-0 left-0 z-50 w-64 bg-gradient-to-b from-secondary to-slate-800 transform -translate-x-full transition-transform duration-300 ease-in-out lg:translate-x-0 lg:static lg:inset-0">
             <div class="flex items-center justify-center h-16 bg-slate-900 border-b border-slate-700">
                 <h1 class="text-xl font-bold text-white">
-                    <i class="fas fa-crown text-accent mr-2"></i>
                     Admin Panel
                 </h1>
             </div>
 
             <nav class="mt-8 px-4">
                 <ul class="space-y-2">
-                    <li>
-                        <a href="{{ route('admin.dashboard') }}"
-                            class="sidebar-link flex items-center px-4 py-3 text-gray-300 rounded-lg hover:bg-slate-700 hover:text-white transition-all duration-200 group {{ request()->routeIs('admin.dashboard') ? 'bg-primary text-white shadow-lg' : '' }}">
-                            <i
-                                class="fas fa-tachometer-alt w-5 h-5 mr-3 group-hover:scale-110 transition-transform"></i>
-                            <span class="font-medium">Dashboard</span>
-                        </a>
-                    </li>
-                    <li>
-                        <a href="{{ route('admin.akun') }}"
-                            class="sidebar-link flex items-center px-4 py-3 text-gray-300 rounded-lg hover:bg-slate-700 hover:text-white transition-all duration-200 group {{ request()->routeIs('admin.akun') ? 'bg-primary text-white shadow-lg' : '' }}">
-                            <i class="fas fa-user w-5 h-5 mr-3 group-hover:scale-110 transition-transform"></i>
-                            <span class="font-medium">Akun</span>
-                        </a>
-                    </li>
-                    <li>
-                        <a href="{{ route('admin.stock') }}"
-                            class="sidebar-link flex items-center px-4 py-3 text-gray-300 rounded-lg hover:bg-slate-700 hover:text-white transition-all duration-200 group {{ request()->routeIs('admin.stock') ? 'bg-primary text-white shadow-lg' : '' }}">
-                            <i class="fas fa-boxes w-5 h-5 mr-3 group-hover:scale-110 transition-transform"></i>
-                            <span class="font-medium">Stock</span>
-                        </a>
-                    </li>
-                    <li>
-                        <a href="{{ route('admin.laporan') }}"
-                            class="sidebar-link flex items-center px-4 py-3 text-gray-300 rounded-lg hover:bg-slate-700 hover:text-white transition-all duration-200 group {{ request()->routeIs('admin.laporan') ? 'bg-primary text-white shadow-lg' : '' }}">
-                            <i class="fas fa-chart-bar w-5 h-5 mr-3 group-hover:scale-110 transition-transform"></i>
-                            <span class="font-medium">Laporan</span>
-                        </a>
-                    </li>
+                    @if (Auth::guard('admin')->check())
+                        <li>
+                            <a href="{{ route('dashboard') }}"
+                                class="sidebar-link flex items-center px-4 py-3 text-gray-300 rounded-lg hover:bg-slate-700 hover:text-white transition-all duration-200 group {{ request()->routeIs('dashboard') ? 'bg-primary text-white shadow-lg' : '' }}">
+                                <i
+                                    class="fas fa-tachometer-alt w-5 h-5 mr-3 group-hover:scale-110 transition-transform"></i>
+                                <span class="font-medium">Dashboard</span>
+                            </a>
+                        </li>
+                    @endif
+                    @if (Auth::guard('superadmin')->check())
+                        <li>
+                            <a href="{{ route('akun') }}"
+                                class="sidebar-link flex items-center px-4 py-3 text-gray-300 rounded-lg hover:bg-slate-700 hover:text-white transition-all duration-200 group {{ request()->routeIs('akun') ? 'bg-primary text-white shadow-lg' : '' }}">
+                                <i class="fas fa-user w-5 h-5 mr-3 group-hover:scale-110 transition-transform"></i>
+                                <span class="font-medium">Akun</span>
+                            </a>
+                        </li>
+                    @endif
+                    @if (Auth::guard('admin')->check())
+                        <li>
+                            <a href="{{ route('stok.index') }}"
+                                class="sidebar-link flex items-center px-4 py-3 text-gray-300 rounded-lg hover:bg-slate-700 hover:text-white transition-all duration-200 group {{ request()->routeIs('stok.index') ? 'bg-primary text-white shadow-lg' : '' }}">
+                                <i class="fas fa-boxes w-5 h-5 mr-3 group-hover:scale-110 transition-transform"></i>
+                                <span class="font-medium">Stock</span>
+                            </a>
+                        </li>
+                        <li>
+                            <a href="{{ route('laporan') }}"
+                                class="sidebar-link flex items-center px-4 py-3 text-gray-300 rounded-lg hover:bg-slate-700 hover:text-white transition-all duration-200 group {{ request()->routeIs('laporan') ? 'bg-primary text-white shadow-lg' : '' }}">
+                                <i class="fas fa-chart-bar w-5 h-5 mr-3 group-hover:scale-110 transition-transform"></i>
+                                <span class="font-medium">Laporan</span>
+                            </a>
+                        </li>
+                    @endif
                 </ul>
             </nav>
 
-            <!-- User Profile at Bottom -->
-            <div class="absolute bottom-0 left-0 right-0 p-4 border-t border-slate-700">
-                <div class="flex items-center space-x-3">
-                    <div class="w-10 h-10 bg-accent rounded-full flex items-center justify-center">
-                        <i class="fas fa-user text-white"></i>
-                    </div>
-                    <div class="flex-1">
-                        <p class="text-sm font-medium text-white">Admin User</p>
-                        <p class="text-xs text-gray-400">Administrator</p>
-                    </div>
-                </div>
-            </div>
+
         </div>
 
         <!-- Main Content -->
@@ -108,7 +105,7 @@
 
                         <!-- Right Section -->
                         <div class="flex items-center space-x-4">
-                          
+
 
                             <!-- Notifications -->
                             <div class="relative">
@@ -169,8 +166,17 @@
                                         <i class="fas fa-user text-white text-sm"></i>
                                     </div>
                                     <div class="hidden lg:block text-left">
-                                        <p class="text-sm font-medium text-gray-900">Admin User</p>
-                                        <p class="text-xs text-gray-500">Administrator</p>
+                                        @if (Auth::guard('admin')->check())
+                                            <p class="text-sm font-medium text-gray-900">Admin</p>
+                                            <p class="text-sm font-medium text-gray-900">
+                                                {{ Auth::guard('admin')->user()->username }}</p>
+                                        @elseif(Auth::guard('superadmin')->check())
+                                            <p class="text-sm font-medium text-gray-900">Super Admin</p>
+                                            <p class="text-sm font-medium text-gray-900">
+                                                {{ Auth::guard('superadmin')->user()->username }}</p>
+                                        @endif
+                                        {{-- <p class="text-sm font-medium text-gray-900">Admin User</p>
+                                        <p class="text-xs text-gray-500">Administrator</p> --}}
                                     </div>
                                     <i class="fas fa-chevron-down text-gray-400 text-xs hidden lg:block"></i>
                                 </button>
@@ -185,8 +191,18 @@
                                                 <i class="fas fa-user text-white"></i>
                                             </div>
                                             <div>
-                                                <p class="text-sm font-medium text-gray-900">Admin User</p>
-                                                <p class="text-xs text-gray-500">admin@example.com</p>
+                                                <div>
+                                                    @if (Auth::guard('admin')->check())
+                                                        <p class="text-sm font-medium text-gray-900">Admin</p>
+                                                        <p class="text-sm font-medium text-gray-900">
+                                                            {{ Auth::guard('admin')->user()->username }}</p>
+                                                    @elseif(Auth::guard('superadmin')->check())
+                                                        <p class="text-sm font-medium text-gray-900">Super Admin</p>
+                                                        <p class="text-sm font-medium text-gray-900">
+                                                            {{ Auth::guard('superadmin')->user()->username }}</p>
+                                                    @endif
+                                                </div>
+
                                             </div>
                                         </div>
                                     </div>
@@ -196,22 +212,19 @@
                                             <i class="fas fa-user-circle w-4 h-4 mr-3"></i>
                                             My Profile
                                         </a>
-                                        <a href="#"
-                                            class="flex items-center px-4 py-2 text-sm text-gray-700 hover:bg-gray-100">
-                                            <i class="fas fa-cog w-4 h-4 mr-3"></i>
-                                            Settings
-                                        </a>
-                                        <a href="#"
-                                            class="flex items-center px-4 py-2 text-sm text-gray-700 hover:bg-gray-100">
-                                            <i class="fas fa-question-circle w-4 h-4 mr-3"></i>
-                                            Help & Support
-                                        </a>
                                         <hr class="my-1">
                                         <a href="#"
+                                            onclick="event.preventDefault(); document.getElementById('logout-form').submit();"
                                             class="flex items-center px-4 py-2 text-sm text-red-600 hover:bg-red-50">
                                             <i class="fas fa-sign-out-alt w-4 h-4 mr-3"></i>
                                             Sign Out
                                         </a>
+
+                                        <form id="logout-form" action="{{ route('logout') }}"
+                                            method="POST" style="display: none;">
+                                            @csrf
+                                        </form>
+
                                     </div>
                                 </div>
                             </div>
@@ -231,14 +244,6 @@
                             <div class="flex items-center space-x-2 text-sm">
                                 <div class="w-2 h-2 bg-green-500 rounded-full animate-pulse"></div>
                                 <span class="text-gray-600">System Online</span>
-                            </div>
-                        </div>
-
-                        <div class="flex items-center space-x-4 text-sm text-gray-600">
-                            <div class="hidden md:flex items-center space-x-4">
-                                <span>Total Items: <strong class="text-gray-900">1,234</strong></span>
-                                <span>•</span>
-                                <span>Low Stock: <strong class="text-red-600">5</strong></span>
                             </div>
                         </div>
                     </div>
@@ -329,6 +334,7 @@
         updateTime();
         setInterval(updateTime, 1000);
     </script>
+    @stack('scripts')
 </body>
 
 </html>
