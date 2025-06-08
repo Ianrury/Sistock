@@ -82,7 +82,7 @@
                     <i class="fas fa-sign-in-alt mr-2"></i>Masuk
                 </button>
 
-                <!-- Register Link -->
+                {{-- <!-- Register Link -->
                 <div class="text-center pt-4 border-t border-gray-200">
                     <p class="text-gray-600">
                         Belum punya akun?
@@ -91,13 +91,8 @@
                             Daftar sekarang
                         </a>
                     </p>
-                </div>
+                </div> --}}
             </form>
-        </div>
-
-        <!-- Footer -->
-        <div class="text-center mt-8 text-gray-500 text-sm">
-            <p>&copy; 2024 Sistem Stok. All rights reserved.</p>
         </div>
     </div>
 

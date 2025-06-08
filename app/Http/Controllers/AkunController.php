@@ -143,4 +143,86 @@ class AkunController extends Controller
             ], 500);
         }
     }
+    public function editUsername(Request $request)
+    {
+        try {
+            $request->validate([
+                'username' => 'required|string|unique:admins,username,' . Auth::guard('admin')->id(),
+            ]);
+
+            $admin = Auth::guard('superadmin')->user();
+            $admin->username = $request->username;
+            $admin->save();
+
+            return response()->json([
+                'success' => true,
+                'message' => 'Username berhasil diperbarui.'
+            ]);
+
+        } catch (\Illuminate\Validation\ValidationException $e) {
+            return response()->json([
+                'success' => false,
+                'message' => 'Validasi gagal',
+                'errors' => $e->errors()
+            ], 422);
+
+        } catch (\Exception $e) {
+            return response()->json([
+                'success' => false,
+                'message' => 'Terjadi kesalahan saat memperbarui username'
+            ], 500);
+        }
+    }
+
+    public function editPassword(Request $request)
+    {
+        try {
+            // Validasi input
+            $request->validate([
+                'current_password' => 'required|string',
+                'new_password' => 'required|string|min:6',
+                'confirm_password' => 'required|string|same:new_password',
+            ]);
+
+            $admin = Auth::guard('superadmin')->user();
+
+            // Cek apakah current password benar
+            if (!Hash::check($request->current_password, $admin->password)) {
+                return response()->json([
+                    'success' => false,
+                    'message' => 'Kata sandi lama salah.'
+                ], 422);
+            }
+
+            // Cek apakah new password sama dengan confirm password
+            if ($request->new_password !== $request->confirm_password) {
+                return response()->json([
+                    'success' => false,
+                    'message' => 'Konfirmasi kata sandi tidak sama.'
+                ], 422);
+            }
+
+            // Update password
+            $admin->password = Hash::make($request->new_password);
+            $admin->save();
+
+            return response()->json([
+                'success' => true,
+                'message' => 'Kata sandi berhasil diperbarui.'
+            ]);
+
+        } catch (\Illuminate\Validation\ValidationException $e) {
+            return response()->json([
+                'success' => false,
+                'message' => 'Data tidak valid',
+                'errors' => $e->errors()
+            ], 422);
+
+        } catch (\Exception $e) {
+            return response()->json([
+                'success' => false,
+                'message' => 'Terjadi kesalahan saat memperbarui kata sandi'
+            ], 500);
+        }
+    }
 }

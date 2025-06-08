@@ -19,11 +19,11 @@
                 <i class="fas fa-user-plus text-white text-2xl"></i>
             </div>
             <h1 class="text-3xl font-bold text-gray-800">Daftar Akun</h1>
-            <p class="text-gray-600 mt-2">Buat akun baru untuk Sistem Stok</p>
+            <p class="text-gray-600 mt-2">Register ini untuk membuat akun superadmin</p>
         </div>
 
         <!-- Register Form -->
-        <div class="bg-white rounded-2xl shadow-xl p-8 backdrop-blur-sm border border-gray-100">
+        <div class="bg-white rounded-2xl shadow-xl p-2 backdrop-blur-sm border border-gray-100">
             <form method="POST" action="{{ route('register') }}" class="space-y-6">
                 @csrf
 
@@ -139,10 +139,6 @@
             </form>
         </div>
 
-        <!-- Footer -->
-        <div class="text-center mt-8 text-gray-500 text-sm">
-            <p>&copy; 2024 Sistem Stok. All rights reserved.</p>
-        </div>
     </div>
 
     <script>

@@ -9,8 +9,9 @@ class EnsureUserIsAuthenticated
 {
     public function handle($request, Closure $next, $guard = null)
     {
-        if (!Auth::guard('admin')->check() ||  !Auth::guard('superadmin')->check()) {
-            return redirect()->route('login'); 
+        // PERBAIKAN: Gunakan && (AND) bukan || (OR)
+        if (!Auth::guard('admin')->check() && !Auth::guard('superadmin')->check()) {
+            return redirect()->route('login');
         }
 
         return $next($request);

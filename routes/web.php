@@ -19,13 +19,17 @@ Route::middleware(['guest.custom'])->group(function () {
     Route::get('/login', [SuperAdminAuthController::class, 'showLoginForm'])->name('login');
     Route::get('/register', [SuperAdminAuthController::class, 'showRegisterForm'])->name('register');
 
+    Route::post('/login', [SuperAdminAuthController::class, 'login'])->name('login.post');
+    Route::post('/register', [SuperAdminAuthController::class, 'register'])->name('register.post');
 });
 
-Route::post('/login', [SuperAdminAuthController::class, 'login']);
-Route::post('/register', [SuperAdminAuthController::class, 'register']);
+Route::get('/', function () {
+    return redirect()->route('login');
+});
 
-Route::post('/superadmin/logout', [SuperAdminAuthController::class, 'logout'])->name('logout');
-
+Route::get('/profile', function () {
+    return view('profile');
+})->name('profile');
 
 
 Route::middleware(['isSuperAdmin'])->group(function () {
@@ -33,30 +37,40 @@ Route::middleware(['isSuperAdmin'])->group(function () {
 });
 
 
-Route::get('/dashboard/data', [DashboardController::class, 'getChartData'])->name('dashboard.data');
-Route::get('/stock', [App\Http\Controllers\ObatController::class, 'index'])->name('stok.index');
-Route::post('/stock/store', [App\Http\Controllers\ObatController::class, 'store'])->name('stok.store');
-Route::get('/stock/destroy', [App\Http\Controllers\ObatController::class, 'create'])->name('stok.destroy');
-Route::get('/stock/edit/{id}', [App\Http\Controllers\ObatController::class, 'edit'])->name('stok.edit');
-Route::put('/stock/update/{id}', [App\Http\Controllers\ObatController::class, 'update'])->name('stok.update');
-Route::delete('/stock/delete/{id}', [App\Http\Controllers\ObatController::class, 'destroy'])->name('stok.delete');
-Route::get('/stock/history/{id}', [App\Http\Controllers\ObatController::class, 'show'])->name('stok.show');
+Route::middleware(['auth.custom'])->group(function () {
+    Route::post('/superadmin/logout', [SuperAdminAuthController::class, 'logout'])->name('logout');
 
 
 
-Route::get('/akun', [App\Http\Controllers\AkunController::class, 'index'])->name('akun');
-Route::get('/akuh/create', [App\Http\Controllers\AkunController::class, 'create'])->name('akun.create');
-Route::post('/akuh/store', [App\Http\Controllers\AkunController::class, 'store'])->name('akun.store');
-Route::get('/akun/edit/{id}', [App\Http\Controllers\AkunController::class, 'edit'])->name('akun.edit');
-Route::post('/akun/update/{id}', [App\Http\Controllers\AkunController::class, 'update'])->name('akun.update');
-Route::post('/akun/hapus/{id}', [App\Http\Controllers\AkunController::class, 'destroy'])->name('akun.destroy');
-
-Route::post('/akun/history', [App\Http\Controllers\HistoryController::class, 'store'])->name('history.store');
-Route::delete('/akun/destroy/{id}', [App\Http\Controllers\HistoryController::class, 'destroy'])->name('history.destroy');
-Route::get('/export/history-pengeluaran/{id}', [App\Http\Controllers\HistoryController::class, 'exportPDF'])->name('history.export.pdf');
+    Route::get('/dashboard/data', [DashboardController::class, 'getChartData'])->name('dashboard.data');
+    Route::get('/stock', [App\Http\Controllers\ObatController::class, 'index'])->name('stok.index');
+    Route::post('/stock/store', [App\Http\Controllers\ObatController::class, 'store'])->name('stok.store');
+    Route::get('/stock/destroy', [App\Http\Controllers\ObatController::class, 'create'])->name('stok.destroy');
+    Route::get('/stock/edit/{id}', [App\Http\Controllers\ObatController::class, 'edit'])->name('stok.edit');
+    Route::put('/stock/update/{id}', [App\Http\Controllers\ObatController::class, 'update'])->name('stok.update');
+    Route::delete('/stock/delete/{id}', [App\Http\Controllers\ObatController::class, 'destroy'])->name('stok.delete');
+    Route::get('/stock/history/{id}', [App\Http\Controllers\ObatController::class, 'show'])->name('stok.show');
 
 
-Route::get('/laporan', [App\Http\Controllers\LaporanController::class, 'index'])->name('laporan');
-Route::post('/laporan', [App\Http\Controllers\LaporanController::class, 'filter'])->name('laporan.filter');
-Route::get('/laporan/pdf', [App\Http\Controllers\LaporanController::class, 'exportPDF'])->name('laporan.export.pdf');
-Route::get('/laporan/excel', [App\Http\Controllers\LaporanController::class, 'exportExcel'])->name('laporan.export.excel');
+
+
+    Route::get('/akun', [App\Http\Controllers\AkunController::class, 'index'])->name('akun');
+    Route::get('/akuh/create', [App\Http\Controllers\AkunController::class, 'create'])->name('akun.create');
+    Route::post('/akuh/store', [App\Http\Controllers\AkunController::class, 'store'])->name('akun.store');
+    Route::get('/akun/edit/{id}', [App\Http\Controllers\AkunController::class, 'edit'])->name('akun.edit');
+    Route::post('/akun/update/{id}', [App\Http\Controllers\AkunController::class, 'update'])->name('akun.update');
+    Route::post('/akun/hapus/{id}', [App\Http\Controllers\AkunController::class, 'destroy'])->name('akun.destroy');
+
+    Route::post('/edit/username', [App\Http\Controllers\AkunController::class, 'editUsername'])->name('akun.edit.username');
+    Route::post('/edit/password', [App\Http\Controllers\AkunController::class, 'editPassword'])->name('akun.edit.password');
+
+    Route::post('/akun/history', [App\Http\Controllers\HistoryController::class, 'store'])->name('history.store');
+    Route::delete('/akun/destroy/{id}', [App\Http\Controllers\HistoryController::class, 'destroy'])->name('history.destroy');
+    Route::get('/export/history-pengeluaran/{id}', [App\Http\Controllers\HistoryController::class, 'exportPDF'])->name('history.export.pdf');
+
+
+    Route::get('/laporan', [App\Http\Controllers\LaporanController::class, 'index'])->name('laporan');
+    Route::post('/laporan', [App\Http\Controllers\LaporanController::class, 'filter'])->name('laporan.filter');
+    Route::get('/laporan/pdf', [App\Http\Controllers\LaporanController::class, 'exportPDF'])->name('laporan.export.pdf');
+    Route::get('/laporan/excel', [App\Http\Controllers\LaporanController::class, 'exportExcel'])->name('laporan.export.excel');
+});

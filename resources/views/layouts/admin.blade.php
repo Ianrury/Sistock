@@ -207,11 +207,13 @@
                                         </div>
                                     </div>
                                     <div class="py-2">
-                                        <a href="#"
-                                            class="flex items-center px-4 py-2 text-sm text-gray-700 hover:bg-gray-100">
-                                            <i class="fas fa-user-circle w-4 h-4 mr-3"></i>
-                                            My Profile
-                                        </a>
+                                        @if (Auth::guard('superadmin')->check())
+                                            <a href="/profile"
+                                                class="flex items-center px-4 py-2 text-sm text-gray-700 hover:bg-gray-100">
+                                                <i class="fas fa-user-circle w-4 h-4 mr-3"></i>
+                                                Profile saya
+                                            </a>
+                                        @endif
                                         <hr class="my-1">
                                         <a href="#"
                                             onclick="event.preventDefault(); document.getElementById('logout-form').submit();"
@@ -220,8 +222,8 @@
                                             Sign Out
                                         </a>
 
-                                        <form id="logout-form" action="{{ route('logout') }}"
-                                            method="POST" style="display: none;">
+                                        <form id="logout-form" action="{{ route('logout') }}" method="POST"
+                                            style="display: none;">
                                             @csrf
                                         </form>
 

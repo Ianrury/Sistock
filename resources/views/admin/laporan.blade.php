@@ -226,7 +226,7 @@
                     <td class="px-6 py-4 whitespace-nowrap text-sm text-gray-900">${item.stock_obat.toLocaleString('id-ID')}</td>
                     <td class="px-6 py-4 whitespace-nowrap text-sm text-gray-500">${formatDate(item.tanggal_masuk)}</td>
                     <td class="px-6 py-4 whitespace-nowrap text-sm text-gray-500">${formatDate(item.tanggal_kadaluarsa)}</td>
-                    <td class="px-6 py-4 whitespace-nowrap text-sm text-gray-900">${item.bentuk} - ${item.isi_kemasan}${item.satuan}</td>
+                    <td class="px-6 py-4 whitespace-nowrap text-sm text-gray-900">${item.bentuk} - ${item.isi_kemasan} ${item.satuan}</td>
                 </tr>
             `).join('');
 

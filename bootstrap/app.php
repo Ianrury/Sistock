@@ -11,12 +11,13 @@ return Application::configure(basePath: dirname(__DIR__))
         health: '/up',
     )
     ->withMiddleware(function (Middleware $middleware) {
+        // Daftarkan semua middleware alias
         $middleware->alias([
-            'auth.superadmin' => \App\Http\Middleware\SuperAdminAuth::class,
+            'isSuperAdmin' => \App\Http\Middleware\Issuperadmin::class,
             'guest' => \App\Http\Middleware\RedirectIfAuthenticated::class,
             'guest.custom' => \App\Http\Middleware\RedirectIfAuthenticatedCustom::class,
             'auth.custom' => \App\Http\Middleware\EnsureUserIsAuthenticated::class,
-            'isSuperAdmin' => \App\Http\Middleware\Issuperadmin::class,
+            'auth.superadmin' => \App\Http\Middleware\SuperAdminAuth::class,
         ]);
     })
     ->withExceptions(function (Exceptions $exceptions) {
