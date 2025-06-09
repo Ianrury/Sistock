@@ -147,7 +147,7 @@
                     </svg>
                     Pengeluaran
                 </button>
-                <a href="{{ route('history.export.pdf', $obat->id) }}">
+                {{-- <a href="{{ route('history.export.pdf', $obat->id) }}">
                     <button 
                         class="inline-flex items-center px-4 py-2 border border-transparent rounded-md shadow-sm text-sm font-medium text-white bg-green-600 hover:bg-green-700 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-green-500">
                         <svg class="w-4 h-4 mr-2" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24">
@@ -156,7 +156,7 @@
                         </svg>
                         Export Data
                     </button>
-                </a>
+                </a> --}}
             </div>
         </div>
 

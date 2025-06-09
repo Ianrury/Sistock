@@ -219,7 +219,7 @@
 
         function editAccount(id) {
             const account = accountsData.find(acc => acc.id === id);
-            window.location.href = `/akuh/edit/${account.id}`;
+            window.location.href = `/akun/edit/${account.id}`;
         }
 
         function deleteAccount(id) {

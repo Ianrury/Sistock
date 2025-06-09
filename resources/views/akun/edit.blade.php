@@ -1,7 +1,7 @@
 @extends('layouts.admin')
 
-@section('title', 'Manajement tambah - Admin Panel')
-@section('page-title', 'Manajement tambah')
+@section('title', 'edit akun - Admin Panel')
+@section('page-title', 'edit akun')
 
 @section('content')
     @include('sweetalert::alert')
