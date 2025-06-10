@@ -6,42 +6,49 @@ use App\Http\Controllers\Controller;
 use App\Models\DataObat;
 use Illuminate\Http\Request;
 use Carbon\Carbon;
+use Illuminate\Support\Facades\Auth;
 
 class DashboardController extends Controller
 {
     public function index(Request $request)
     {
+        // ambil nama puskesmas dari admin yang sedang login
+        $admin = Auth::guard('admin')->user();
+        $puskesmas = $admin->puskesmas->nama;
+
+        $admin = Auth::guard('admin')->user();
+        $adminId = $admin->id;
         $selectedYear = $request->get('year', date('Y'));
 
-        $obatPerBulan = $this->getObatDataPerMonth($selectedYear);
-
-        $availableYears = $this->getAvailableYears();
+        $obatPerBulan = $this->getObatDataPerMonth($selectedYear, $adminId);
+        $availableYears = $this->getAvailableYears($adminId);
 
         if (empty($availableYears)) {
             $availableYears = [date('Y')];
         }
 
-        // Pastikan hanya menghitung data yang tidak di soft delete
-        $totalObat = DataObat::whereNull('deleted_at')->count();
+        $totalObat = DataObat::whereNull('deleted_at')
+            ->where('admin_id', $adminId)
+            ->count();
 
         $obatHampirKadaluarsa = DataObat::whereNull('deleted_at')
+            ->where('admin_id', $adminId)
             ->whereDate('tanggal_kadaluarsa', '<=', Carbon::now()->addDays(30))
             ->count();
 
         $stokRendah = DataObat::whereNull('deleted_at')
+            ->where('admin_id', $adminId)
             ->where('stock_obat', '<=', 10)
             ->count();
 
         $obatBulanIni = DataObat::whereNull('deleted_at')
+            ->where('admin_id', $adminId)
             ->whereMonth('tanggal_masuk', Carbon::now()->month)
             ->whereYear('tanggal_masuk', Carbon::now()->year)
             ->count();
 
-        // Data untuk chart jenis obat
-        $jenisObatData = $this->getJenisObatData();
-
-        // Data untuk chart bentuk obat  
-        $bentukObatData = $this->getBentukObatData();
+        $jenisObatData = $this->getJenisObatData($adminId);
+        $bentukObatData = $this->getBentukObatData($adminId);
 
         $data = [
             'title' => 'Dashboard',
@@ -55,12 +62,13 @@ class DashboardController extends Controller
             'obatBulanIni' => $obatBulanIni,
             'jenisObatData' => $jenisObatData,
             'bentukObatData' => $bentukObatData,
+            'puskesmas' => $puskesmas
         ];
 
         return view('admin.dashboard', $data);
     }
 
-    private function getObatDataPerMonth($year)
+    private function getObatDataPerMonth($year, $adminId)
     {
         $months = [
             1 => 'Januari',
@@ -80,10 +88,10 @@ class DashboardController extends Controller
         $data = [];
 
         foreach ($months as $monthNum => $monthName) {
-            // Menggunakan tanggal_masuk dan exclude soft deleted
             $count = DataObat::whereNull('deleted_at')
-                ->whereRaw('YEAR(tanggal_masuk) = ?', [$year])
-                ->whereRaw('MONTH(tanggal_masuk) = ?', [$monthNum])
+                ->where('admin_id', $adminId)
+                ->whereYear('tanggal_masuk', $year)
+                ->whereMonth('tanggal_masuk', $monthNum)
                 ->count();
 
             $data[] = [
@@ -96,24 +104,25 @@ class DashboardController extends Controller
         return $data;
     }
 
-    private function getAvailableYears()
+    private function getAvailableYears($adminId)
     {
-        // Menggunakan tanggal_masuk untuk mendapatkan tahun yang tersedia, exclude soft deleted
         return DataObat::whereNull('deleted_at')
-            ->selectRaw('YEAR(tanggal_masuk) as year')
+            ->where('admin_id', $adminId)
             ->whereNotNull('tanggal_masuk')
+            ->selectRaw('YEAR(tanggal_masuk) as year')
             ->distinct()
             ->orderBy('year', 'desc')
             ->pluck('year')
-            ->filter() // Remove null values
+            ->filter()
             ->toArray();
     }
 
-    // API endpoint untuk AJAX
     public function getChartData(Request $request)
     {
+        $admin = Auth::guard('admin')->user();
+        $adminId = $admin->id;
         $year = $request->get('year', date('Y'));
-        $data = $this->getObatDataPerMonth($year);
+        $data = $this->getObatDataPerMonth($year, $adminId);
 
         return response()->json([
             'labels' => array_column($data, 'month'),
@@ -122,11 +131,12 @@ class DashboardController extends Controller
         ]);
     }
 
-    private function getJenisObatData()
+    private function getJenisObatData($adminId)
     {
         $jenisObat = DataObat::whereNull('deleted_at')
-            ->selectRaw('jenis_obat, COUNT(*) as total')
+            ->where('admin_id', $adminId)
             ->whereNotNull('jenis_obat')
+            ->selectRaw('jenis_obat, COUNT(*) as total')
             ->groupBy('jenis_obat')
             ->orderBy('total', 'desc')
             ->limit(5)
@@ -138,11 +148,12 @@ class DashboardController extends Controller
         ];
     }
 
-    private function getBentukObatData()
+    private function getBentukObatData($adminId)
     {
         $bentukObat = DataObat::whereNull('deleted_at')
-            ->selectRaw('bentuk, COUNT(*) as total')
+            ->where('admin_id', $adminId)
             ->whereNotNull('bentuk')
+            ->selectRaw('bentuk, COUNT(*) as total')
             ->groupBy('bentuk')
             ->orderBy('total', 'desc')
             ->get();

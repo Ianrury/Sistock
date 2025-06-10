@@ -50,6 +50,16 @@
                     @endif
                     @if (Auth::guard('superadmin')->check())
                         <li>
+                            <a href="{{ route('puskesmas.index') }}"
+                                class="sidebar-link flex items-center px-4 py-3 text-gray-300 rounded-lg hover:bg-slate-700 hover:text-white transition-all duration-200 group {{ request()->routeIs('puskesmas.index') ? 'bg-primary text-white shadow-lg' : '' }}">
+                                <i
+                                    class="fa-solid fa-building w-5 h-5 mr-3 group-hover:scale-110 transition-transform"></i>
+                                <span class="font-medium">Puskesmas</span>
+                            </a>
+                        </li>
+                    @endif
+                    @if (Auth::guard('superadmin')->check())
+                        <li>
                             <a href="{{ route('akun') }}"
                                 class="sidebar-link flex items-center px-4 py-3 text-gray-300 rounded-lg hover:bg-slate-700 hover:text-white transition-all duration-200 group {{ request()->routeIs('akun') ? 'bg-primary text-white shadow-lg' : '' }}">
                                 <i class="fas fa-user w-5 h-5 mr-3 group-hover:scale-110 transition-transform"></i>

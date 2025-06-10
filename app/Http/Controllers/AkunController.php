@@ -3,6 +3,7 @@
 namespace App\Http\Controllers;
 
 use App\Models\Admin;
+use App\Models\Puskesmas;
 use App\Models\SuperAdmin;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
@@ -33,7 +34,13 @@ class AkunController extends Controller
      */
     public function create()
     {
-        return view('akun.create');
+        // AMBIL DATA PUSKESMAS
+        $puskesmas = Puskesmas::get();
+        if ($puskesmas->isEmpty()) {
+            Alert::error('Error', 'Anda harus membuat Puskesmas terlebih dahulu.');
+            return redirect()->route('puskesmas.create');
+        }
+        return view('akun.create', compact('puskesmas'));
     }
 
     /**
@@ -41,11 +48,20 @@ class AkunController extends Controller
      */
     public function store(Request $request)
     {
+        // dd($request->all());
         $validated = $request->validate([
             'username' => 'required|string|unique:admins,username',
             'password' => 'required|string|min:6',
+            'puskesmas_id' => 'required',
             'password_confirmation' => 'required_with:password|same:password',
         ]);
+
+        $existingAdmin = Admin::where('puskesmas_id', $validated['puskesmas_id'])->first();
+        if ($existingAdmin) {
+            Alert::error('Error', 'Puskesmas ini sudah memiliki admin.');
+            return redirect()->back()->withInput();
+        }
+
 
         $adminExists = Admin::where('username', $validated['username'])->exists();
         if ($adminExists) {
@@ -85,8 +101,13 @@ class AkunController extends Controller
      */
     public function edit(string $id)
     {
+        $puskesmas = Puskesmas::get();
+        if ($puskesmas->isEmpty()) {
+            Alert::error('Error', 'Anda harus membuat Puskesmas terlebih dahulu.');
+            return redirect()->route('puskesmas.create');
+        }
         $admin = Admin::findOrFail($id);
-        return view('akun.edit', compact('admin'));
+        return view('akun.edit', compact('admin', 'puskesmas'));
     }
 
     /**
@@ -97,23 +118,31 @@ class AkunController extends Controller
         $admin = Admin::findOrFail($id);
 
         $validated = $request->validate([
-            'username' => 'required|string|unique:admins,username,' . $admin->id,
+            'username' => 'required|string|unique:admins,username,' . $id,
             'password' => 'nullable|string|min:6',
-            'password_confirmation' => 'nullable|same:password',
+            'puskesmas_id' => 'required|exists:puskesmas,id',
+            'password_confirmation' => 'required_with:password|same:password',
         ]);
 
-        // Cek apakah username yang dimasukkan sama dengan super admin
         $superAdmin = SuperAdmin::where('username', $validated['username'])->first();
         if ($superAdmin) {
             Alert::error('Error', 'Username tidak boleh sama dengan Super Admin.');
             return redirect()->back()->withInput();
         }
 
-        // Jika password diisi, hash password baru
+        $adminWithSamePuskesmas = Admin::where('puskesmas_id', $validated['puskesmas_id'])
+            ->where('id', '!=', $admin->id)
+            ->first();
+
+        if ($adminWithSamePuskesmas) {
+            Alert::error('Error', 'Puskesmas tersebut sudah memiliki admin.');
+            return redirect()->back()->withInput();
+        }
+
         if (!empty($validated['password'])) {
             $validated['password'] = Hash::make($validated['password']);
         } else {
-            unset($validated['password']); // supaya tidak menimpa password lama
+            unset($validated['password']); 
         }
 
         $admin->update($validated);

@@ -8,19 +8,27 @@ use Barryvdh\DomPDF\Facade\Pdf;
 use Illuminate\Support\Facades\DB;
 use Maatwebsite\Excel\Facades\Excel;
 use App\Exports\StockObatExport;
+use Illuminate\Support\Facades\Auth;
 
 class LaporanController extends Controller
 {
+
     public function index()
     {
-        $obat = DataObat::all();
-        // dd($obat);
+        $adminId = Auth::guard('admin')->id();
+
+        // Ambil semua data milik admin yang login
+        $obat = DataObat::where('admin_id', $adminId)->get();
+
         return view('admin.laporan', compact('obat'));
     }
 
     public function filter(Request $request)
     {
-        $query = DataObat::query();
+        $adminId = Auth::guard('admin')->id();
+
+        // Filter awal berdasarkan admin yang login
+        $query = DataObat::where('admin_id', $adminId);
 
         if ($request->filled('tanggal_mulai') && $request->filled('tanggal_akhir')) {
             $query->whereBetween('created_at', [
@@ -41,9 +49,10 @@ class LaporanController extends Controller
 
     public function exportPDF(Request $request)
     {
-        $query = DataObat::query();
+        $adminId = Auth::guard('admin')->id();
 
-        // Filter berdasarkan tanggal
+        $query = DataObat::where('admin_id', $adminId);
+
         if ($request->filled('tanggal_mulai') && $request->filled('tanggal_akhir')) {
             $query->whereBetween('created_at', [
                 $request->tanggal_mulai . ' 00:00:00',
@@ -51,14 +60,12 @@ class LaporanController extends Controller
             ]);
         }
 
-        // Filter berdasarkan tahun
         if ($request->filled('tahun')) {
             $query->whereYear('created_at', $request->tahun);
         }
 
         $obat = $query->orderBy('nama_obat', 'asc')->get();
 
-        // Data untuk dikirim ke view
         $data = [
             'obat' => $obat,
             'tanggal_mulai' => $request->tanggal_mulai,
@@ -77,7 +84,9 @@ class LaporanController extends Controller
     public function exportExcel(Request $request)
     {
         try {
-            $query = DataObat::query();
+            $adminId = Auth::guard('admin')->id();
+
+            $query = DataObat::where('admin_id', $adminId);
 
             if ($request->filled('tanggal_mulai') && $request->filled('tanggal_akhir')) {
                 $query->whereBetween('created_at', [
@@ -91,13 +100,6 @@ class LaporanController extends Controller
             }
 
             $obat = $query->orderBy('nama_obat', 'asc')->get();
-
-            $data = [
-                'obat' => $obat,
-                'tanggal_mulai' => $request->tanggal_mulai,
-                'tanggal_akhir' => $request->tanggal_akhir,
-                'tahun' => $request->tahun
-            ];
 
             $filename = 'laporan_stock_obat_' . date('Y-m-d_H-i-s') . '.xlsx';
 

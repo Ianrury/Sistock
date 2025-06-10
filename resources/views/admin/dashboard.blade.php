@@ -4,6 +4,37 @@
 @section('page-title', 'Dashboard')
 
 @section('content')
+    <div class="container mx-auto  py-8">
+        <div class="bg-white rounded-xl shadow-lg border border-gray-100 p-8 animate-fade-in">
+            <div class="flex items-center justify-between">
+                <div class="flex items-center space-x-6">
+                    <div
+                        class="w-16 h-16 bg-gradient-to-br from-purple-500 to-pink-500 rounded-xl flex items-center justify-center shadow-lg">
+                        <svg class="w-8 h-8 text-white" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
+                                d="M16 7a4 4 0 11-8 0 4 4 0 018 0zM12 14a7 7 0 00-7 7h14a7 7 0 00-7-7z"></path>
+                        </svg>
+                    </div>
+                    <div>
+                        <h1 class="text-2xl font-bold text-gray-900 mb-1">
+                            Selamat Datang, Admin!
+                        </h1>
+                        <p class="text-gray-600">
+                            <span class="font-semibold text-purple-600">{{ $puskesmas }}</span>
+                        </p>
+                        <p class="text-sm text-gray-500 mt-1">
+                            {{ date('l, d F Y') }} 
+                        </p>
+                    </div>
+                </div>
+                <div class="hidden lg:block">
+                    <div class="text-right">
+                       
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
     <div class="grid grid-cols-1 md:grid-cols-2 xl:grid-cols-4 gap-6 mb-6">
         <div
             class="bg-white rounded-xl shadow-lg hover:shadow-xl transition-all duration-300 transform hover:-translate-y-1">

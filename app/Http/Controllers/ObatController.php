@@ -12,7 +12,10 @@ class ObatController extends Controller
 {
     public function index(Request $request)
     {
-        $query = DataObat::query();
+        $admin = Auth::guard('admin')->user();
+        $adminId = $admin->id;
+
+        $query = DataObat::where('admin_id', $adminId); // Filter awal berdasarkan admin
 
         if ($request->has('search') && $request->search != '') {
             $search = $request->search;
@@ -27,18 +30,13 @@ class ObatController extends Controller
         $query->orderBy('tanggal_masuk', 'desc');
 
         $obats = $query->paginate(10);
-
         $obats->appends($request->only('search'));
 
-        // jumlah seluruh obat
-        $totalObat = DataObat::count();
-        // jumlah obat yang akan habis
-        $lowStock = DataObat::where('stock_obat', '<=', 10)->count();
-        // jumlah obat yang habis
-        $outOfStock = DataObat::where('stock_obat', 0)->count();
-
-        // yang baru pada bulan ini
-        $newThisMonth = DataObat::whereMonth('tanggal_masuk', now()->month)
+        $totalObat = DataObat::where('admin_id', $adminId)->count();
+        $lowStock = DataObat::where('admin_id', $adminId)->where('stock_obat', '<=', 10)->count();
+        $outOfStock = DataObat::where('admin_id', $adminId)->where('stock_obat', 0)->count();
+        $newThisMonth = DataObat::where('admin_id', $adminId)
+            ->whereMonth('tanggal_masuk', now()->month)
             ->whereYear('tanggal_masuk', now()->year)
             ->count();
 
@@ -68,6 +66,7 @@ class ObatController extends Controller
 
 
         DataObat::create($validated);
+
 
         Alert::success('Hore!', 'Data obat berhasil ditambahkan!')->persistent(true);
         return redirect()->back();

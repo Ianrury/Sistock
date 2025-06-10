@@ -1,5 +1,6 @@
 <?php
 
+use App\Http\Controllers\PuskesmasController;
 use Illuminate\Support\Facades\Route;
 
 use App\Http\Controllers\Auth\SuperAdminAuthController;
@@ -38,7 +39,7 @@ Route::middleware(['isSuperAdmin'])->group(function () {
 
 
 Route::middleware(['auth.custom'])->group(function () {
-    Route::post('/superadmin/logout', [SuperAdminAuthController::class, 'logout'])->name('logout');
+    Route::post('/logout', [SuperAdminAuthController::class, 'logout'])->name('logout');
 
 
 
@@ -55,8 +56,8 @@ Route::middleware(['auth.custom'])->group(function () {
 
 
     Route::get('/akun', [App\Http\Controllers\AkunController::class, 'index'])->name('akun');
-    Route::get('/akuh/create', [App\Http\Controllers\AkunController::class, 'create'])->name('akun.create');
-    Route::post('/akuh/store', [App\Http\Controllers\AkunController::class, 'store'])->name('akun.store');
+    Route::get('/akun/create', [App\Http\Controllers\AkunController::class, 'create'])->name('akun.create');
+    Route::post('/akun/store', [App\Http\Controllers\AkunController::class, 'store'])->name('akun.store');
     Route::get('/akun/edit/{id}', [App\Http\Controllers\AkunController::class, 'edit'])->name('akun.edit');
     Route::post('/akun/update/{id}', [App\Http\Controllers\AkunController::class, 'update'])->name('akun.update');
     Route::post('/akun/hapus/{id}', [App\Http\Controllers\AkunController::class, 'destroy'])->name('akun.destroy');
@@ -68,6 +69,12 @@ Route::middleware(['auth.custom'])->group(function () {
     Route::delete('/akun/destroy/{id}', [App\Http\Controllers\HistoryController::class, 'destroy'])->name('history.destroy');
     Route::get('/export/history-pengeluaran/{id}', [App\Http\Controllers\HistoryController::class, 'exportPDF'])->name('history.export.pdf');
 
+    Route::get('/puskesmas', [App\Http\Controllers\PuskesmasController::class, 'index'])->name('puskesmas.index');
+    Route::get('/puskesmas/create', [App\Http\Controllers\PuskesmasController::class, 'create'])->name('puskesmas.create');
+    Route::post('/puskesmas/store', [App\Http\Controllers\PuskesmasController::class, 'store'])->name('puskesmas.store');
+    Route::get('/puskesmas/edit/{id}', [App\Http\Controllers\PuskesmasController::class, 'edit'])->name('puskesmas.edit');
+    Route::put('/puskesmas/update/{id}', [App\Http\Controllers\PuskesmasController::class, 'update'])->name('puskesmas.update');
+    Route::post('/puskesmas/destroy/{id}', [PuskesmasController::class, 'destroy'])->name('puskesmas.destroy');
 
     Route::get('/laporan', [App\Http\Controllers\LaporanController::class, 'index'])->name('laporan');
     Route::post('/laporan', [App\Http\Controllers\LaporanController::class, 'filter'])->name('laporan.filter');

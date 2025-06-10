@@ -3,14 +3,14 @@
 namespace App\Models;
 
 use Illuminate\Database\Eloquent\Factories\HasFactory;
-use Illuminate\Foundation\Auth\User as Authenticatable; 
+use Illuminate\Foundation\Auth\User as Authenticatable;
 use Illuminate\Notifications\Notifiable;
 
-class Admin extends Authenticatable 
+class Admin extends Authenticatable
 {
     use HasFactory, Notifiable;
 
-    protected $fillable = ['username', 'password', 'super_admin_id'];
+    protected $fillable = ['username', 'password', 'super_admin_id', 'puskesmas_id'];
 
     public function superAdmin()
     {
@@ -21,4 +21,9 @@ class Admin extends Authenticatable
     {
         return $this->hasMany(DataObat::class);
     }
+    public function puskesmas()
+    {
+        return $this->belongsTo(Puskesmas::class);
+    }
+
 }

@@ -67,6 +67,28 @@
                             </p>
                         </div>
 
+                        <div class="group">
+                            <label for="puskesmas" class="block text-sm font-semibold text-gray-700 mb-2">
+                                Puskesmas
+                                <span class="text-red-500 ml-1">*</span>
+                            </label>
+
+                            <select id="puskesmas" name="puskesmas_id"
+                                class="w-full border border-gray-300 rounded-md shadow-sm focus:border-indigo-500 focus:ring-indigo-500"
+                                required>
+                                <option value="">-- Pilih Puskesmas --</option>
+                                @foreach ($puskesmas as $item)
+                                    <option value="{{ $item->id }}"
+                                        {{ old('puskesmas_id') == $item->id ? 'selected' : '' }}>
+                                        {{ $item->nama }}
+                                    </option>
+                                @endforeach
+                            </select>
+
+                            @error('puskesmas_id')
+                                <p class="text-red-500 text-sm mt-1">{{ $message }}</p>
+                            @enderror
+                        </div>
                         <!-- Password Field -->
                         <div class="group">
                             <label for="password" class="block text-sm font-semibold text-gray-700 mb-2">
@@ -230,9 +252,114 @@
         </div>
     </div>
 @endsection
+
+@push('styles')
+    {{-- Select2 CSS --}}
+    <link href="https://cdn.jsdelivr.net/npm/select2@4.1.0-rc.0/dist/css/select2.min.css" rel="stylesheet" />
+
+    {{-- Custom Select2 Tailwind Styling --}}
+    <style>
+        .select2-container--default .select2-selection--single {
+            height: 42px;
+            border: 1px solid #d1d5db;
+            border-radius: 0.375rem;
+            padding: 0.5rem 0.75rem;
+            background-color: white;
+        }
+
+        .select2-container--default .select2-selection--single .select2-selection__rendered {
+            color: #374151;
+            line-height: 28px;
+            padding-left: 0;
+            padding-right: 20px;
+        }
+
+        .select2-container--default .select2-selection--single .select2-selection__arrow {
+            height: 40px;
+            right: 10px;
+        }
+
+        .select2-container--default.select2-container--focus .select2-selection--single,
+        .select2-container--default.select2-container--open .select2-selection--single {
+            border-color: #6366f1;
+            box-shadow: 0 0 0 3px rgba(99, 102, 241, 0.1);
+            outline: none;
+        }
+
+        .select2-dropdown {
+            border: 1px solid #d1d5db;
+            border-radius: 0.375rem;
+            box-shadow: 0 10px 15px -3px rgba(0, 0, 0, 0.1), 0 4px 6px -2px rgba(0, 0, 0, 0.05);
+        }
+
+        .select2-container--default .select2-results__option--highlighted[aria-selected] {
+            background-color: #6366f1;
+            color: white;
+        }
+
+        .select2-container--default .select2-results__option {
+            padding: 8px 12px;
+        }
+
+        .select2-container--default .select2-search--dropdown .select2-search__field {
+            border: 1px solid #d1d5db;
+            border-radius: 0.375rem;
+            padding: 8px 12px;
+        }
+
+        .select2-container--default .select2-search--dropdown .select2-search__field:focus {
+            border-color: #6366f1;
+            outline: none;
+            box-shadow: 0 0 0 3px rgba(99, 102, 241, 0.1);
+        }
+
+        /* Responsive */
+        .select2-container {
+            width: 100% !important;
+        }
+    </style>
+@endpush
 @push('scripts')
     <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/select2@4.1.0-rc.0/dist/js/select2.min.js"></script>
 
+
+    <script>
+        $(document).ready(function() {
+            // Initialize Select2
+            $('#puskesmas').select2({
+                placeholder: "-- Pilih Puskesmas --",
+                allowClear: true,
+                width: '100%',
+                language: {
+                    noResults: function() {
+                        return "Tidak ada data yang ditemukan";
+                    },
+                    searching: function() {
+                        return "Mencari...";
+                    },
+                    loadingMore: function() {
+                        return "Memuat lebih banyak hasil...";
+                    }
+                },
+                // Tambahan konfigurasi
+                dropdownParent: $('body'), // Untuk modal compatibility
+                escapeMarkup: function(markup) {
+                    return markup;
+                }
+            });
+
+            // Event listener untuk debugging (opsional)
+            $('#puskesmas').on('select2:select', function(e) {
+                var data = e.params.data;
+                console.log('Puskesmas terpilih:', data);
+            });
+
+            $('#puskesmas').on('select2:clear', function(e) {
+                console.log('Pilihan puskesmas dihapus');
+            });
+        });
+    </script>
     <script>
         $(document).ready(function() {
             // Toggle password visibility
