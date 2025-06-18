@@ -1,6 +1,6 @@
 @extends('layouts.admin')
 
-@section('title', 'Manajement Puskesmas - Admin Panel')
+@section('title', 'Manajement Puskesmas')
 @section('page-title', 'Manajement Puskesmas')
 
 @section('content')
@@ -190,8 +190,8 @@
             for (let i = 1; i <= totalPages; i++) {
                 const button = document.createElement('button');
                 button.className = `relative inline-flex items-center px-4 py-2 border text-sm font-medium rounded-lg ${
-                    i === currentPage 
-                        ? 'border-transparent text-white bg-primary hover:bg-blue-700' 
+                    i === currentPage
+                        ? 'border-transparent text-white bg-primary hover:bg-blue-700'
                         : 'border-gray-300 text-gray-700 bg-white hover:bg-gray-50'
                 }`;
                 button.textContent = i;

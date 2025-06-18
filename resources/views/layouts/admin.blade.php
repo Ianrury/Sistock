@@ -32,7 +32,11 @@
             class="fixed inset-y-0 left-0 z-50 w-64 bg-gradient-to-b from-secondary to-slate-800 transform -translate-x-full transition-transform duration-300 ease-in-out lg:translate-x-0 lg:static lg:inset-0">
             <div class="flex items-center justify-center h-16 bg-slate-900 border-b border-slate-700">
                 <h1 class="text-xl font-bold text-white">
-                    Admin Panel
+                     @if (Auth::guard('admin')->check())
+                           Admin
+                        @elseif(Auth::guard('superadmin')->check())
+                          Super Admin
+                        @endif
                 </h1>
             </div>
 

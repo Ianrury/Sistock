@@ -24,7 +24,8 @@
 
         <!-- Register Form -->
         <div class="bg-white rounded-2xl shadow-xl p-2 backdrop-blur-sm border border-gray-100">
-            <form method="POST" action="{{ route('register') }}" class="space-y-6">
+           <div class="px-2">
+             <form method="POST" action="{{ route('register') }}" class="space-y-6">
                 @csrf
 
                 <!-- Username Field -->
@@ -137,6 +138,7 @@
                     </p>
                 </div>
             </form>
+           </div>
         </div>
 
     </div>

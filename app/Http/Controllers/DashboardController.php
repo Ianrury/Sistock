@@ -14,10 +14,10 @@ class DashboardController extends Controller
     {
         // ambil nama puskesmas dari admin yang sedang login
         $admin = Auth::guard('admin')->user();
-        $puskesmas = $admin->puskesmas->nama;
+        $puskesmas = $admin->puskesmas->nama ?? 'Tidak diketahui';
 
         $admin = Auth::guard('admin')->user();
-        $adminId = $admin->id;
+        $adminId = $admin->id ?? 'Tidak diketahui';
         $selectedYear = $request->get('year', date('Y'));
 
         $obatPerBulan = $this->getObatDataPerMonth($selectedYear, $adminId);

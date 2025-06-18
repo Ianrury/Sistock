@@ -8,6 +8,8 @@ use App\Models\SuperAdmin;
 use Illuminate\Support\Facades\Hash;
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Validation\ValidationException;
+use RealRashid\SweetAlert\Facades\Alert;
+
 
 class SuperAdminAuthController extends Controller
 {
@@ -69,9 +71,10 @@ class SuperAdminAuthController extends Controller
             'password' => Hash::make($request->password),
         ]);
 
-        session(['superadmin' => $superadmin->id]);
 
-        return redirect()->route('dashboard');
+        Alert::success('Success', 'Akun Super Admin Berhasil Dibuat.');
+
+        return redirect()->route('login');
     }
 
     public function logout(Request $request)
